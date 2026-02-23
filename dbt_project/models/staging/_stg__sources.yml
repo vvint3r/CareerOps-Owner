@@ -1,0 +1,54 @@
+version: 2
+
+sources:
+  - name: gtm_case
+    database: demo_db
+    schema: gtm_case
+    description: >
+      Raw Salesforce and finance exports loaded into Snowflake for the
+      Owner.com GTM analytics case study. Data covers Jan–Jul 2024.
+
+    tables:
+      - name: leads
+        description: >
+          Salesforce leads with sales activity metrics, predicted revenue,
+          restaurant attributes, and conversion status.
+          ~27,000 rows covering both inbound (form submissions) and
+          outbound (BDR cold-call) sourced leads.
+        columns:
+          - name: lead_id
+            description: Salesforce lead ID (primary key).
+            tests:
+              - unique
+              - not_null
+
+      - name: opportunities
+        description: >
+          Salesforce opportunities (deals) created when a lead converts
+          to a demo/sales conversation. Tracks stage, demo activity,
+          close dates, and lost reasons.
+          ~2,800 rows.
+        columns:
+          - name: opportunity_id
+            description: Salesforce opportunity ID (primary key).
+            tests:
+              - unique
+              - not_null
+
+      - name: advertising
+        description: >
+          Monthly paid advertising spend (Facebook + Google) for the
+          inbound channel. 6 rows covering Jan–Jun 2024.
+          Currency in European format (comma decimal, space thousands).
+        columns:
+          - name: month
+            description: Month label in Mon-YY format (e.g. Jan-24).
+
+      - name: expenses_salary_and_commissions
+        description: >
+          Monthly salary and commission costs split by inbound and
+          outbound sales teams. 6 rows covering Jan–Jun 2024.
+          Currency in European format.
+        columns:
+          - name: month
+            description: Month label in Mon-YY format (e.g. Jan-24).

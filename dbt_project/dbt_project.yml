@@ -1,0 +1,32 @@
+name: 'owner_gtm_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'owner_gtm'
+
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  owner_gtm_analytics:
+
+    staging:
+      +schema: gtm_case
+      +materialized: view
+      +tags: ['staging']
+
+    intermediate:
+      +schema: gtm_case
+      +materialized: view
+      +tags: ['intermediate']
+
+    marts:
+      +schema: gtm_case
+      +materialized: table
+      +tags: ['marts']

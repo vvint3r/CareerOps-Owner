@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: mart__gtm_unit_economics
+    description: >
+      Core SSOT for GTM unit economics. Aggregates funnel volume,
+      revenue estimates, and cost data to compute CAC, LTV, and
+      CAC:LTV ratio by month and channel.
+      Grain: one row per (month, channel).
+    columns:
+      - name: month
+        description: First day of month (opportunity created_date truncated).
+      - name: channel
+        description: Resolved acquisition channel (inbound / outbound).
+      - name: total_leads
+        description: Distinct leads whose opportunities were created in this month.
+      - name: total_opportunities
+        description: Distinct opportunities created in this month.
+      - name: closed_won
+        description: Count of opportunities that closed won.
+      - name: closed_lost
+        description: Count of opportunities that closed lost.
+      - name: cac
+        description: >
+          Customer Acquisition Cost = total channel cost / closed won deals.
+          NULL when no deals closed won or no cost data available.
+      - name: avg_ltv_per_won_deal
+        description: >
+          Average estimated annual LTV across won deals this month.
+      - name: ltv_to_cac_ratio
+        description: >
+          LTV:CAC ratio. Values above 3:1 are generally considered
+          healthy for SaaS businesses.
+
+  - name: mart__channel_performance
+    description: >
+      Deep-dive into channel-level conversion rates, win rates,
+      deal velocity, lost reason distribution, and 6-month cumulative
+      unit economics. Designed for strategic channel allocation
+      decisions.
+      Grain: one row per resolved_channel.
+    columns:
+      - name: channel
+        description: Resolved acquisition channel.
+      - name: lead_to_opp_rate_pct
+        description: Percentage of leads that converted to an opportunity.
+      - name: opp_to_demo_set_rate_pct
+        description: Percentage of opportunities that had a demo scheduled.
+      - name: demo_set_to_held_rate_pct
+        description: Percentage of scheduled demos that were actually held.
+      - name: demo_held_to_won_rate_pct
+        description: Percentage of held demos that resulted in a win.
+      - name: win_rate_pct
+        description: Won / (Won + Lost) as a percentage.
+      - name: cac_6mo
+        description: 6-month cumulative CAC by channel.
+      - name: ltv_to_cac_ratio_6mo
+        description: 6-month cumulative LTV:CAC ratio.
+      - name: top_lost_reason
+        description: Most frequent lost reason for this channel.

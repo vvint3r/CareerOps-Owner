@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: int__lead_opportunity_funnel
+    description: >
+      Joins leads to their converted opportunities, resolving the
+      acquisition channel and computing estimated LTV per deal.
+      Every lead appears exactly once; leads without a converted
+      opportunity get NULL opportunity columns.
+      Grain: one row per lead_id.
+    columns:
+      - name: lead_id
+        description: Salesforce lead ID (primary key).
+        tests:
+          - unique
+          - not_null
+      - name: resolved_channel
+        description: >
+          Final channel assignment. Uses opportunity-level attribution
+          first (how_did_you_hear_about_us), falls back to lead-level
+          inference (form_submission_date presence).
+      - name: funnel_stage
+        description: >
+          Ordered funnel stage for the lead:
+          1_lead_only, 2_open_opportunity, 3_closed_lost_no_demo,
+          4_closed_lost_after_demo, 5_closed_won.
+      - name: estimated_annual_ltv
+        description: >
+          Projected first-year revenue: ($500 * 12 subscription) +
+          (predicted_sales_with_owner * 5% take rate * 12 months).
+
+  - name: int__monthly_channel_costs
+    description: >
+      Combines advertising spend and team salaries into a unified
+      cost view by month and channel. Inbound cost = ad spend + SDR
+      salaries. Outbound cost = BDR salaries only.
+      Grain: one row per (expense_month, channel).
+    columns:
+      - name: expense_month
+        description: First day of month as DATE.
+      - name: channel
+        description: "'inbound' or 'outbound'."
+      - name: total_channel_cost
+        description: Sum of advertising + team cost for this channel and month.

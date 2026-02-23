@@ -1,0 +1,79 @@
+version: 2
+
+models:
+  - name: stg__leads
+    description: >
+      Cleaned and standardized leads. Fixes European number formats,
+      date typos (00XX→20XX), and derives inferred channel from form
+      submission presence. Calculates total outreach touches and
+      days-to-first-contact.
+    columns:
+      - name: lead_id
+        description: Salesforce lead ID (primary key).
+        tests:
+          - unique
+          - not_null
+      - name: inferred_channel
+        description: >
+          'inbound' if form_submission_date is populated (prospect
+          submitted interest form), 'outbound' otherwise (sourced via
+          BDR cold outreach).
+      - name: predicted_sales_with_owner
+        description: >
+          Estimated monthly online sales the restaurant could generate
+          with Owner.com, in USD. Parsed from European number format.
+      - name: total_touches
+        description: Sum of sales calls, texts, and emails for this lead.
+      - name: is_converted
+        description: True if the lead has a converted_opportunity_id.
+
+  - name: stg__opportunities
+    description: >
+      Cleaned opportunities with fixed date fields, boolean stage flags,
+      and attributed channel buckets. Calculates days-to-close and
+      days-to-demo.
+    columns:
+      - name: opportunity_id
+        description: Salesforce opportunity ID (primary key).
+        tests:
+          - unique
+          - not_null
+      - name: attributed_channel
+        description: >
+          Channel derived from how_did_you_hear_about_us: 'inbound'
+          (Facebook/IG, Media Outlet, Youtube, Word of mouth), 'outbound'
+          (Cold call), or 'unknown'.
+      - name: is_closed_won
+        description: True if stage_name = 'Closed Won'.
+      - name: is_closed_lost
+        description: True if stage_name = 'Closed Lost'.
+      - name: days_to_close
+        description: Calendar days from opportunity creation to close.
+
+  - name: stg__advertising
+    description: >
+      Monthly advertising spend parsed from European currency format
+      to numeric USD. One row per month (Jan–Jun 2024).
+    columns:
+      - name: expense_month
+        description: First day of month as DATE.
+        tests:
+          - unique
+          - not_null
+      - name: advertising_spend
+        description: Total paid ad spend for the month in USD.
+
+  - name: stg__expenses
+    description: >
+      Monthly salary and commission costs by team, parsed from European
+      currency format. One row per month (Jan–Jun 2024).
+    columns:
+      - name: expense_month
+        description: First day of month as DATE.
+        tests:
+          - unique
+          - not_null
+      - name: outbound_sales_team_cost
+        description: Total outbound (BDR) team cost for the month in USD.
+      - name: inbound_sales_team_cost
+        description: Total inbound (SDR) team cost for the month in USD.
