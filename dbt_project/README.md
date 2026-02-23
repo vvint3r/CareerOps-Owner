@@ -1,48 +1,5 @@
 # Owner.com GTM Analytics — dbt Data Product
 
-A dbt project that transforms raw Salesforce and finance data in Snowflake into a single source of truth (SSOT) for Owner.com's Go-To-Market analytics, enabling data-driven decisions on channel allocation, funnel optimization, and CAC:LTV improvement.
-
----
-
-## Quick Start
-
-```bash
-# 1. Install dbt-snowflake
-pip install dbt-snowflake
-
-# 2. Configure your profile (~/.dbt/profiles.yml)
-#    See "Snowflake Connection" section below
-
-# 3. Verify connection
-dbt debug
-
-# 4. Run all models
-dbt run
-
-# 5. Run tests
-dbt test
-```
-
-### Snowflake Connection
-
-Add the following to `~/.dbt/profiles.yml`:
-
-```yaml
-owner_gtm:
-  target: dev
-  outputs:
-    dev:
-      type: snowflake
-      account: gvszsbn-tea10269
-      user: <your_user>
-      password: <your_password>
-      database: demo_db
-      schema: gtm_case
-      warehouse: case_wh
-      role: <your_role>
-      threads: 4
-```
-
 ---
 
 ## Project Structure
